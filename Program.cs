@@ -19,27 +19,30 @@ namespace Company
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
+            
             IConfiguration configuration = config.Build();
             AppConfig appConfig = configuration.GetSection("Project").Get<AppConfig>()!;
 
+            //Подключаем котекст БД
             builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(appConfig.Database.ConnectionString)
             .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
-            //builder.Services.AddTransient<IServiceCategoriesRepository, EFServiceCategoriesRepository>();
-            //builder.Services.AddTransient<IServicesRepository, EFServicesRepository>();
-            //builder.Services.AddTransient<DataManager>();
+            builder.Services.AddTransient<IServiceCategoriesRepository, EFServiceCategoriesRepository>();
+            builder.Services.AddTransient<IServicesRepository, EFServicesRepository>();
+            builder.Services.AddTransient<DataManager>();
 
-            //Identity system
-            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-            //{
-            //    options.User.RequireUniqueEmail = true;
-            //    options.Password.RequiredLength = 6;
-            //    options.Password.RequireNonAlphanumeric = false;
-            //    options.Password.RequireLowercase = false;
-            //    options.Password.RequireUppercase = false;
-            //    options.Password.RequireDigit = false;
-            //}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            //Identity System
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
+            //Auth Cookie
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "CompanyAuth";

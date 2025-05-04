@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Company.Domain.Repositories.EntityFramework
 {
-    public class EFServiceCategoriesRepository //: IServiceCategoriesRepository
+    public class EFServiceCategoriesRepository : IServiceCategoriesRepository
     {
         private readonly AppDbContext _context;
         public EFServiceCategoriesRepository(AppDbContext context)
@@ -27,7 +27,7 @@ namespace Company.Domain.Repositories.EntityFramework
             return await _context.ServiceCategories.Include(x => x.Services).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task SaveServiceCategoryAcinc(ServiceCategory entity)
+        public async Task SaveServiceCategoryAsync(ServiceCategory entity)
         {
             _context.Entry(entity).State = entity.Id == default ? EntityState.Added: EntityState.Modified;
             await _context.SaveChangesAsync();

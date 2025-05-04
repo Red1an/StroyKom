@@ -10,7 +10,7 @@ namespace Company.Domain.Repositories.Abstract
     public interface IServicesRepository
     {
         Task<IEnumerable<Services>> GetServicesAsync();
-        Task<Services> GetSrvisesByAcync(int id);
+        Task<Services?> GetServicesByIdAsync(int id);
         Task SaveServicesAsync(Services entity);
         Task DeleteServicesAsync(int id);
     }

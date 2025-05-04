@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.Domain.Repositories.EntityFramework
 {
-    public class EFServicesRepository 
+    public class EFServicesRepository : IServicesRepository
     {
         private readonly AppDbContext _context;
         public EFServicesRepository(AppDbContext context)
@@ -23,7 +23,7 @@ namespace Company.Domain.Repositories.EntityFramework
             return await _context.Services.Include(x => x.ServiceCategory).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task SaveServicesAcinc(Services entity)
+        public async Task SaveServicesAsync(Services entity)
         {
             _context.Entry(entity).State = entity.Id == default ? EntityState.Added : EntityState.Modified;
             await _context.SaveChangesAsync();
